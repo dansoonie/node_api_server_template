@@ -1,0 +1,32 @@
+yarn add --dev \
+  typescript \
+  @types/node \
+  @types/debug \
+  tslint \
+  tslint-config-airbnb \
+  tslint-eslint-rules \
+  nodemon
+
+yarn add --dev \
+  @types/bcrypt \
+  @types/body-parser \
+  @types/cors \  
+  @types/express \
+  @types/helmet \
+  @types/jsonwebtoken \
+  @types/mongoose \
+  @types/passport \
+  @types/passport-local \
+  ts-node
+
+yarn add \
+  bcrypt \
+  body-parser \
+  cors \
+  dotenv \
+  express \
+  helmet \
+  jsonwebtoken \
+  mongoose \
+  passport \
+  passport-local
