@@ -1,9 +1,11 @@
 import bodyParser from 'body-parser'
-import express from 'express'
+import debug from 'debug'
+import express, { Request, Response, NextFunction } from 'express'
 import helmet from 'helmet'
 import http from 'http'
 
 import config from './env'
+import { errorHandler } from './error'
 import * as bouncer from './middlewares/bouncer'
 import UserRouter from './routes/user_router'
 
@@ -17,13 +19,15 @@ app.set('secret', config.secret || 'StupidSecret')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(helmet())
-app.use(bouncer.check)
+app.use(/\/api\/v1\/users\/(?!(signup|login)).*/, bouncer.check)
 
 // Initialize routes
-app.use('/v1/api/users', UserRouter)
+app.use('/api/v1/users', UserRouter)
 
 app.use((req, res, next) => {
   res.status(404).send(http.STATUS_CODES[404])
 })
+
+app.use(errorHandler)
 
 export default app

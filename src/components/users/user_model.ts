@@ -76,7 +76,7 @@ const UserSchema: Schema = new Schema({
     default: false
   }
 }, {
-  collection: 'usermodel',
+  collection: 'users',
   versionKey: false
 }).pre('save', async function (next: NextFunction): Promise<void> {
   const user: any = this // tslint:disable-line
@@ -107,6 +107,11 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
   }
 }
 
-UserSchema.index({ origin: 1, originId: 1 })
+UserSchema.index({
+  origin: 1,
+  originId: 1
+}, {
+  unique: true
+})
 
 export default connections.db.model<IUserModel>('UserModel', UserSchema)

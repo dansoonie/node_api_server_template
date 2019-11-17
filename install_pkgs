@@ -14,10 +14,13 @@ yarn add --dev \
   @types/express \
   @types/helmet \
   @types/jsonwebtoken \
-  @types/mongoose \
-  @types/passport \
-  @types/passport-local \
-  ts-node
+  @types/mongoose \  
+  ts-node \
+  jest \
+  @types/jest \
+  ts-jest \
+  supertest \
+  @types/supertest
 
 yarn add \
   bcrypt \
@@ -27,6 +30,4 @@ yarn add \
   express \
   helmet \
   jsonwebtoken \
-  mongoose \
-  passport \
-  passport-local
+  mongoose

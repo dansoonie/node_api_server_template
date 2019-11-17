@@ -13,7 +13,7 @@ interface IConfig {
 
 const NODE_ENV: string = process.env.NODE_ENV || 'development'
 
-const development: IConfig = {
+const dev: IConfig = {
   port: process.env.PORT || 4000,
   database: {
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/',
@@ -22,7 +22,7 @@ const development: IConfig = {
   secret: process.env.SECRET || '@QEGTUI'
 }
 
-const production: IConfig = {
+const prod: IConfig = {
   port: process.env.PORT || 4000,
   database: {
     MONGODB_URI: process.env.MONGODB_URI,
@@ -44,8 +44,8 @@ const config: {
   [name: string]: IConfig
 } = {
   test,
-  development,
-  production
+  dev,
+  prod
 }
 
 export default config[NODE_ENV]

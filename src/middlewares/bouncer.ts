@@ -1,8 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
 import app from '../app'
-import HttpError from '../http_error'
-import * as http from 'http'
+import { AppError } from '../error'
 
 /**
  *
@@ -18,9 +17,9 @@ import * as http from 'http'
  *       in: header
  *       name: x-access-token
  */
-export function check(req: Request, res: Response, next: NextFunction): void {  
+export function check(req: Request, res: Response, next: NextFunction): void {
   const authorization: any = req.headers['authorization']
-  
+
   if (authorization) {
     const token: string = authorization.split(' ')[1]
     if (token) {
@@ -29,10 +28,10 @@ export function check(req: Request, res: Response, next: NextFunction): void {
         req.user = user
         return next()
       } catch (error) {
-        return next(new HttpError(401, http.STATUS_CODES[401]))
+        return next(new AppError(401, 'Invalid token'))
       }
     }
   }
-  return next(new HttpError(400, 'No token provided'))
+  return next(new AppError(403, 'No token provided'))
 }
 

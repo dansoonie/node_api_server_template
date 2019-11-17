@@ -4,9 +4,10 @@
   "main": "./build/index.js",
   "license": "MIT",
   "scripts": {
-    "start:dev": "nodemon --config \"./nodemon.json\"",
+    "start:dev": "./switch_env dev && nodemon --config \"./nodemon.json\"",
     "build": "rm -rf ./build/ && tsc",
-    "start": "node ./build/index.js"
+    "start": "./switch_env prod && npm run build && node ./build/index.js",
+    "test": "./switch_env test && jest --forceExit --coverage --verbose --detectOpenHandles"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -15,12 +16,17 @@
     "@types/debug": "^4.1.5",
     "@types/express": "^4.17.2",
     "@types/helmet": "^0.0.45",
+    "@types/jest": "^24.0.23",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/mongoose": "^5.5.30",
     "@types/node": "^12.12.7",
     "@types/passport": "^1.0.1",
     "@types/passport-local": "^1.0.33",
+    "@types/supertest": "^2.0.8",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.4",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.1.0",
     "ts-node": "^8.5.2",
     "tslint": "^5.20.1",
     "tslint-config-airbnb": "^5.11.2",
