@@ -14,23 +14,19 @@ export const UserController = {
    * @returns {Promise<void>}
    */
   async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {      
+    try {
       const { origin, originId, password } = req.body
       // TODO: Do better check on signup parameters
       if (origin === undefined || originId === undefined || password === undefined) {
         // Bad Request
-        res.status(400).json({
-          msg: 'Missing or invalid signup information'
-        })
+        next(new AppError(400, 'Missing or invalid signup information'))
         return
       }
 
       const user = await UserService.findByOriginId(origin, originId)
       if (user) {
         // Conflict
-        res.status(409).json({
-          msg: 'Already a user with signup information'
-        })
+        next(new AppError(409, 'Already a user with requested signup information'))
       } else {
         await UserService.createUser(origin, originId, password)
         // Ok
@@ -39,7 +35,7 @@ export const UserController = {
         })
       }
     } catch (err) {
-      next(new AppError(500, 'Uknown error occurred during signup', err))
+      next(AppError.wrap(500, 'Uknown error occurred during signup', err))
     }
   },
 
@@ -48,32 +44,32 @@ export const UserController = {
       const { origin, originId, password } = req.body
       if (origin === undefined || originId === undefined || password === undefined) {
         // Bad Request
-        res.status(400).json({
-          msg: 'Missing or invalid signup information'
-        })
-        return
+        return next(new AppError(400, 'Missing or invalid signup infromation'))
       }
+
       const user = await UserService.findByOriginId(origin, originId)
-      if (user) {
+      if (!user) {
+        return next(new AppError(400, 'Unknown user'))
+      }
+
+      if (await UserService.verifyUser(user, password)) {
         const token: string = jwt.sign({
           origin,
           originId,
         }, app.get('secret'), {
           expiresIn: '60m'
         })
-        return res.status(200).json({
+        res.status(200).json({
           origin,
           originId,
           token,
           msg: 'Successfully logged in'
         })
       } else {
-        res.status(400).json({
-          msg: 'Unknown user'
-        })
+        next(new AppError(401, 'Incorrect login information'))
       }
     } catch (err) {
-      next(new AppError(500, 'Unknown error occurred during login'))
+      next(AppError.wrap(500, 'Unknown error occurred during login', err))
     }
   },
 

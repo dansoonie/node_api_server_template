@@ -23,6 +23,7 @@ import { Request, Response, NextFunction } from 'express'
 export class AppError extends Error {
   status: number
   message: string
+  isOperational: boolean
 
   /**
    * Creates an instance of AppError.
@@ -31,10 +32,11 @@ export class AppError extends Error {
    * @param {Error} [err] original error object
    * @memberof AppError
    */
-  constructor(status: number, message?: string, err?: Error) {
+  constructor(status: number, message?: string, err?: Error, isOperational?: boolean) {
     super(message)
     this.status = status
     this.message = message || http.STATUS_CODES[this.status] || 'Error'
+    this.isOperational = isOperational !== undefined? isOperational : true
     if (err) {
       // User stack trace of original error's stack trace
       this.stack = err.stack
@@ -42,28 +44,44 @@ export class AppError extends Error {
       Error.captureStackTrace(this, this.constructor)
     }
   }
+
+  /**
+   * Wraps a normal Error object with AppError with provided error information.
+   * Wrapping will not occur if the Error object is already an AppError object.
+   * @param status 
+   * @param message 
+   * @param err 
+   */
+  static wrap(status: number, message: string, err: Error): AppError{
+    if (err instanceof AppError) {
+      return err
+    } else {
+      return new AppError(status, message, err, false)
+    }
+  }
 }
 
 export const errorHandler = function(err: Error, req: Request, res: Response, next: NextFunction) {
-  const appError = err instanceof AppError? err : new AppError(500, 'Unknown error occurred', err)
+  const appError = err instanceof AppError? err : new AppError(500, 'Unknown error occurred', err, false)
   const status = appError.status
   const description = http.STATUS_CODES[status]
   const msg = appError.message
   res.status(status).json({
     description, msg
   })
-  // TODO: Log more information on error
-  console.error('Error ---->')
-  console.error(` * API PATH: ${req.path}`)
-  console.error(` * HEADERS:`)
-  console.error(req.headers)
-  if (req.path === '/api/v1/users/signup') {
-    req.body.password = req.body.password.replace(/./g, '*')
+  if (!appError.isOperational) {
+    // TODO: Log more information on error
+    console.error('Error ---->')
+    console.error(` * API PATH: ${req.path}`)
+    console.error(` * HEADERS:`)
+    console.error(req.headers)
+    if (req.path === '/api/v1/users/signup') {
+      req.body.password = req.body.password.replace(/./g, '*')
+    }
+    console.error(` * BODY:`)
+    console.error(req.body)
+    console.error(` * MESSAGE: ${appError.message}`)
+    console.error(appError)
+    console.error('<----')
   }
-  console.error(` * BODY:`)
-  console.error(req.body)
-  console.error(` * MESSAGE: ${appError.message}`)
-  console.error(appError)
-  console.error('<----')
-
 }

@@ -31,23 +31,17 @@ export function check(req: Request, res: Response, next: NextFunction): void {
         // jsonwebtoken verify errors
         // https://www.npmjs.com/package/jsonwebtoken#errors--codes
         if (err instanceof jwt.TokenExpiredError) {
-          res.status(401).json({
-            msg: 'Token expired'
-          })
+          next(new AppError(401, 'Token expired'))          
         } else if (err instanceof jwt.JsonWebTokenError ||
                    err instanceof jwt.NotBeforeError) {
-          res.status(401).json({
-            msg: 'Invalid token'
-          })
+          next(new AppError(401, 'Invalid token'))
         } else {
-          return next(new AppError(500, 'Unknown error occurred while validating token', err))
+          next(new AppError(500, 'Unknown error occurred while validating token', err, false))
         }
       }
     }
   } else {
-    res.status(401).json({
-      msg: 'No token provided'
-    })
+    next(new AppError(401, 'No token provided'))    
   }
 }
 jwt.TokenExpiredError
