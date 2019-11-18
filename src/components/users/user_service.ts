@@ -22,8 +22,12 @@ const UserService: IUserService = {
         userInfo.password = password
         userInfo.email = originId
         break
+      case 'facebook':
+        // Not imiplemented
+        throw new AppError(501, 'Signup through social login not supported at the moment')
       default:
-        throw new AppError(501, 'Signup through socail login not supported at the moment')
+        // Bad request
+        throw new AppError(400, 'Signup origin invalid')
     }
     const user: IUserModel | null = await UserModel.create(userInfo)
     return user
