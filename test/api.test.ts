@@ -10,19 +10,16 @@ connection.db.dropDatabase()
 
 const baseURL: string = '/api/v1'
 
-
-describe("signup fail - missing information", () => {
-  it("should return 400 Bad Request", () => {
+describe("API User Signup", () => {
+  it("signup fail - missing information should return 400 Bad Request", () => {
     return request(app).post(`${baseURL}/users/signup`)
     .send({
       origin: 'native',
       originId: 'dan.lee@jocoos.com',
     }).expect(400)
   })
-})
 
-describe("signup fail - invalid information (origin not supported yet)", () => {
-  it("should return 501 Not Implemented", () => {
+  it("signup fail - invalid information (origin not supported yet) should return 501 Not Implemented", () => {
     return request(app).post(`${baseURL}/users/signup`)
     .send({
       origin: 'facebook',
@@ -30,10 +27,8 @@ describe("signup fail - invalid information (origin not supported yet)", () => {
       password: '123456'
     }).expect(501)
   })
-})
 
-describe("signup fail - invalid information (invalid origin)", () => {
-  it("should return 400 Bad Request", () => {
+  it("signup fail - invalid information (invalid origin) should return 400 Bad Request", () => {
     return request(app).post(`${baseURL}/users/signup`)
     .send({
       origin: 'nothing',
@@ -41,10 +36,8 @@ describe("signup fail - invalid information (invalid origin)", () => {
       password: 'password'
     }).expect(400)
   })
-})
 
-describe("signup success", () => {
-  it("should return 200 OK", () => {
+  it("signup success - should return 200 OK", () => {
     return request(app).post(`${baseURL}/users/signup`)
     .send({
       origin: 'native',
@@ -52,10 +45,8 @@ describe("signup success", () => {
       password: 'password'
     }).expect(200)
   })
-})
 
-describe("signup fail - conflict", () => {
-  it("should return 409 Conflict", () => {
+  it("signup fail - conflict should return 409 Conflict", () => {
     return request(app).post(`${baseURL}/users/signup`)
     .send({
       origin: 'native',
