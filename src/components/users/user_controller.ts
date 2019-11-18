@@ -14,8 +14,7 @@ export const UserController = {
    * @returns {Promise<void>}
    */
   async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      throw new Error('test')
+    try {      
       const { origin, originId, password } = req.body
       // TODO: Do better check on signup parameters
       if (origin === undefined || originId === undefined || password === undefined) {
