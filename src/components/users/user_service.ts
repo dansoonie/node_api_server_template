@@ -38,6 +38,8 @@ const UserService: IUserService = {
    * @memberof UserService
    */
   async loginUser(origin: string, originId: string, password: string): Promise<IUserModel | null> {
+    return Promise.resolve(null)
+    /*
     try {
       const validate: Joi.ValidationResult<IUserModel> = AuthValidation.getUser(body);
 
@@ -60,7 +62,8 @@ const UserService: IUserService = {
     } catch (error) {
       throw new Error(error);
     }
-  }
+    */
+  },
 
   async findByObjectId(_id: string | Types.ObjectId): Promise<IUserModel | null> {
     try {

@@ -15,16 +15,23 @@ export const UserController = {
    */
   async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      throw new Error('test')
       const { origin, originId, password } = req.body
       // TODO: Do better check on signup parameters
       if (origin === undefined || originId === undefined || password === undefined) {
         // Bad Request
-        return next(new AppError(400, 'Missing or invalid signup information'))
+        res.status(400).json({
+          msg: 'Missing or invalid signup information'
+        })
+        return
       }
+
       const user = await UserService.findByOriginId(origin, originId)
       if (user) {
         // Conflict
-        return next(new AppError(409, 'Already a user with signup information'))
+        res.status(409).json({
+          msg: 'Already a user with signup information'
+        })
       } else {
         await UserService.createUser(origin, originId, password)
         // Ok
@@ -33,7 +40,7 @@ export const UserController = {
         })
       }
     } catch (err) {
-      next(new AppError(500, 'Unknown error occurred during signup'))
+      next(new AppError(500, 'Uknown error occurred during signup', err))
     }
   },
 
@@ -42,7 +49,10 @@ export const UserController = {
       const { origin, originId, password } = req.body
       if (origin === undefined || originId === undefined || password === undefined) {
         // Bad Request
-        return next(new AppError(400, 'Missing or invalid signup information'))
+        res.status(400).json({
+          msg: 'Missing or invalid signup information'
+        })
+        return
       }
       const user = await UserService.findByOriginId(origin, originId)
       if (user) {
@@ -59,7 +69,9 @@ export const UserController = {
           msg: 'Successfully logged in'
         })
       } else {
-        next(new AppError(400, 'Unknown user'))
+        res.status(400).json({
+          msg: 'Unknown user'
+        })
       }
     } catch (err) {
       next(new AppError(500, 'Unknown error occurred during login'))

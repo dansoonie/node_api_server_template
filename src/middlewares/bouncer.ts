@@ -27,11 +27,27 @@ export function check(req: Request, res: Response, next: NextFunction): void {
         const user: object | string = jwt.verify(token, app.get('secret'))
         req.user = user
         return next()
-      } catch (error) {
-        return next(new AppError(401, 'Invalid token'))
+      } catch (err) {
+        // jsonwebtoken verify errors
+        // https://www.npmjs.com/package/jsonwebtoken#errors--codes
+        if (err instanceof jwt.TokenExpiredError) {
+          res.status(401).json({
+            msg: 'Token expired'
+          })
+        } else if (err instanceof jwt.JsonWebTokenError ||
+                   err instanceof jwt.NotBeforeError) {
+          res.status(401).json({
+            msg: 'Invalid token'
+          })
+        } else {
+          return next(new AppError(500, 'Unknown error occurred while validating token', err))
+        }
       }
     }
+  } else {
+    res.status(401).json({
+      msg: 'No token provided'
+    })
   }
-  return next(new AppError(403, 'No token provided'))
 }
-
+jwt.TokenExpiredError
