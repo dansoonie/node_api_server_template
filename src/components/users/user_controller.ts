@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 import UserService from './user_service'
 import { AppError } from '../../error'
-import app from '../../app'
+
 
 export const UserController = {
   /**
@@ -53,12 +53,7 @@ export const UserController = {
       }
 
       if (await UserService.verifyUser(user, password)) {
-        const token: string = jwt.sign({
-          origin,
-          originId,
-        }, app.get('secret'), {
-          expiresIn: '60m'
-        })
+        const token = UserService.issueToken(user)
         res.status(200).json({
           origin,
           originId,
