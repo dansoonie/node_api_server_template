@@ -91,4 +91,7 @@ router.post('/signup', UserController.signup)
  */
 router.post('/login', UserController.login)
 router.post('/logout', UserController.logout)
+
+router.get('/:_id', UserController.getUser)
+
 export default router

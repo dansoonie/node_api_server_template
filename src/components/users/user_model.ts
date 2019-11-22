@@ -30,6 +30,7 @@ import { NextFunction } from 'express'
  */
 export interface IUserModel extends Document {
   // Essentials
+  _id: string
   origin: string      // native(this server), facebook, twitter, kakao, etc.
   originId: string    // id from account origin
   password?: string
@@ -47,6 +48,10 @@ export type AuthToken = {
 }
 
 const UserSchema: Schema = new Schema({
+  _id: {
+    type: Schema.Types.ObjectId,
+    auto: true
+  },
   origin: {
     type: String,
     required: true,

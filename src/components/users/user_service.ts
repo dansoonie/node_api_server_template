@@ -57,6 +57,7 @@ const UserService: IUserService = {
 
   issueToken(user: IUserModel): string {
     return jwt.sign({
+      _id: user._id,
       origin: user.origin,
       originId: user.originId
     },
