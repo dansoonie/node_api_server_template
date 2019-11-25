@@ -90,13 +90,6 @@ describe('API User login', () => {
         password: TEST_PW
       })
       .expect(200, (err, res) => {
-        const stream = require('fs').createWriteStream('out.txt')
-        stream.write(res.status.toString() + '\n')
-        stream.write(res.body._id + '\n')
-        stream.write(res.body.token + '\n')
-        stream.write(res.body.origin + '\n')
-        stream.write(res.body.originId + '\n')
-        stream.end()
         user_id = res.body._id
         token = res.body.token
         done()
@@ -104,10 +97,6 @@ describe('API User login', () => {
   })
 
   it('Get user info', (done) => {
-    const stream = require('fs').createWriteStream('in.txt')
-    stream.write(user_id + '\n')
-    stream.write(token + '\n')
-    stream.end()
     agent.get(`${baseURL}/users/${user_id}`)
       .send()
       .set({

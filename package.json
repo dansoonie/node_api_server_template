@@ -7,7 +7,7 @@
     "start:dev": "./switch_env dev && nodemon --config \"./nodemon.json\"",
     "build": "rm -rf ./build/ && tsc",
     "start": "./switch_env prod && npm run build && node ./build/index.js",
-    "test": "./switch_env test && jest --forceExit --coverage --verbose --detectOpenHandles --runInBand"
+    "tests": "./switch_env tests && jest --forceExit --coverage --verbose --detectOpenHandles --runInBand"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
